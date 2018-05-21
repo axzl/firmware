@@ -4,6 +4,11 @@
 #include <arduino.h>
 #include "Adafruit_TCS34725.h"
 
+//三色灯引脚定义
+#define LED_R            9
+#define LED_G           10
+#define LED_B           11
+
 //数据类型
 #define BYTE_TYPE      0x01
 #define SHORT_TYPE     0x02
@@ -20,8 +25,9 @@
 
 //执行器
 #define LED            0x01
+#define CLOR3          0x02
 
-//=================================基础函数=======================================
+//================================= 基础函数 =======================================
 
 void sendDataFloat(float value);
 void sendDataFloats(float * value, byte num);
@@ -32,19 +38,20 @@ void sendDataShorts(uint16_t * value, byte num);
 void sendDataByte(byte value);
 void sendData(byte * value, byte type, byte num);
 
-//=================================传感器类型=======================================
+//================================= 传感器类型 =======================================
 
 void get_sensor(byte port, byte device, byte * data); //传感器
 void run_actuator(byte port, byte device, byte * data); //执行器
 void init_device();
 
-//=====================================传感器===================================
+//===================================== 传感器 ===================================
 
 void joystick(byte port, byte * data); //摇动杆
 void rgbColorSensor(byte port, byte * data); //颜色传感器
 
-//=====================================执行器===================================
+//===================================== 执行器 ===================================
 
 void led(byte port, byte * data);
+void clor3(byte port, byte * data);
 
 #endif

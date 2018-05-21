@@ -1,10 +1,10 @@
 ﻿#include "comm.h"
 
-//=================================全局变量=======================================
+//================================= 全局变量 =======================================
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X); //RGB颜色传感器
 
-//=================================基础函数=======================================
+//================================= 基础函数 =======================================
 union {
   byte byteval[4];
   float floatval;
@@ -82,7 +82,7 @@ void sendData(byte * value, byte type, byte num) { //发送数据
   Serial.write(0x0a);
 }
 
-//=================================传感器类型=======================================
+//================================= 传感器类型 =======================================
 
 void get_sensor(byte port, byte device, byte * data) { //传感器
   switch (device) {
@@ -102,19 +102,28 @@ void run_actuator(byte port, byte device, byte * data) { //执行器
     case LED: //0x01
       led(port, data); //LED
       break;
+    case CLOR3://0x02
+      clor3(port, data); //三色灯
+      break;
     default:
       break;
   }
 }
 
 void init_device() { //设备初始化
-  if (tcs.begin()) {// 颜色传感器
+  //============ 颜色传感器 ============
+  if (tcs.begin()) {
     Serial.write(RGB_C_S);
   } else {
     Serial.write(RGB_C_S);
     Serial.write(0x00);
     while (1); // halt!
   }
+  //============ RGB三色灯 ============
+  pinMode(LED_R, OUTPUT);  
+  pinMode(LED_G, OUTPUT);  
+  pinMode(LED_B, OUTPUT);
+  
 }
 
 //=====================================传感器===================================
@@ -151,5 +160,12 @@ void led(byte port, byte * data) { //LED
     echo = 1;
   }
   sendDataByte(echo);
+}
+
+void clor3(byte port, byte * data){
+  analogWrite(LED_R, data[0]>>2); //R
+  analogWrite(LED_G, data[1]>>2); //G
+  analogWrite(LED_B, data[2]>>2); //B
+  sendDataByte(0); //OK
 }
 
